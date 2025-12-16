@@ -11,6 +11,7 @@ interface PracticeScreenProps {
   onBack: () => void;
   onReset: () => void;
   onAnswer: (questionId: number, answer: string) => void;
+  onAddMore: () => void;
 }
 
 const operationColors = {
@@ -28,6 +29,7 @@ const PracticeScreen = ({
   onBack,
   onReset,
   onAnswer,
+  onAddMore,
 }: PracticeScreenProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const questionsPerPage = 5;
@@ -50,6 +52,10 @@ const PracticeScreen = ({
 
   const handleNext = () => {
     if (currentPage < totalPages - 1) {
+      setCurrentPage(currentPage + 1);
+    } else {
+      // Add more questions and go to next page
+      onAddMore();
       setCurrentPage(currentPage + 1);
     }
   };
@@ -120,13 +126,9 @@ const PracticeScreen = ({
 
           <button
             onClick={handleNext}
-            disabled={currentPage === totalPages - 1}
             className={`
               flex-1 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2
-              ${currentPage === totalPages - 1
-                ? "bg-muted text-muted-foreground cursor-not-allowed"
-                : `${operationColors[operation]} text-primary-foreground hover:opacity-90`
-              }
+              ${operationColors[operation]} text-primary-foreground hover:opacity-90
               transition-all
             `}
           >

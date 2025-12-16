@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
-import { Sparkles } from "lucide-react";
+
 import OperationCard from "@/components/OperationCard";
 import PracticeScreen from "@/components/PracticeScreen";
 import DifficultySelect from "@/components/DifficultySelect";
@@ -64,6 +64,18 @@ const Index = () => {
     );
   };
 
+  const handleAddMoreQuestions = () => {
+    if (selectedOperation && selectedDifficulty) {
+      const newQuestions = generateQuestions(selectedOperation, 5, !decimalsEnabled, selectedDifficulty);
+      const lastId = questions.length > 0 ? questions[questions.length - 1].id : 0;
+      const renumberedQuestions = newQuestions.map((q, index) => ({
+        ...q,
+        id: lastId + index + 1,
+      }));
+      setQuestions((prev) => [...prev, ...renumberedQuestions]);
+    }
+  };
+
   // Show practice screen if both operation and difficulty are selected
   if (selectedOperation && selectedDifficulty) {
     return (
@@ -75,6 +87,7 @@ const Index = () => {
         onBack={handleBack}
         onReset={handleReset}
         onAnswer={handleAnswer}
+        onAddMore={handleAddMoreQuestions}
       />
     );
   }
@@ -95,11 +108,6 @@ const Index = () => {
       {/* Hero Section */}
       <div className="px-4 pt-8 pb-6">
         <div className="container max-w-md mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-addition/10 text-addition px-4 py-2 rounded-full mb-4">
-            <Sparkles className="w-4 h-4" />
-            <span className="text-sm font-bold">Math Practice</span>
-          </div>
-
           <h1 className="text-4xl md:text-5xl font-extrabold text-primary font-nunito mb-3">
             Math Learning App
           </h1>
