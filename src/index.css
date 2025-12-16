@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,700;1,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,74 +6,75 @@
 
 @layer base {
   :root {
-    --background: 45 33% 95%;
-    --foreground: 0 0% 25%;
+    /* Warm cream background like the screenshots */
+    --background: 45 70% 95%;
+    --foreground: 220 15% 25%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 25%;
+    --card-foreground: 220 15% 25%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 25%;
+    --popover-foreground: 220 15% 25%;
 
-    --primary: 4 72% 58%;
+    /* Coral/salmon red for title like screenshot */
+    --primary: 5 75% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 45 33% 90%;
-    --secondary-foreground: 0 0% 25%;
-
-    --muted: 45 20% 88%;
-    --muted-foreground: 0 0% 45%;
-
-    --accent: 45 33% 92%;
-    --accent-foreground: 0 0% 25%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 45 20% 85%;
-    --input: 45 20% 85%;
-    --ring: 4 72% 58%;
-
-    --radius: 1rem;
-
-    /* Custom colors for operations */
-    --addition: 145 63% 49%;
+    /* Green for Addition */
+    --addition: 145 55% 48%;
     --addition-foreground: 0 0% 100%;
-    
-    --subtraction: 30 90% 60%;
+
+    /* Orange for Subtraction */
+    --subtraction: 30 95% 55%;
     --subtraction-foreground: 0 0% 100%;
-    
-    --multiplication: 199 89% 48%;
+
+    /* Blue for Multiplication */
+    --multiplication: 205 85% 55%;
     --multiplication-foreground: 0 0% 100%;
-    
-    --division: 340 82% 52%;
+
+    /* Pink/Magenta for Division */
+    --division: 340 80% 55%;
     --division-foreground: 0 0% 100%;
 
-    /* Badge colors */
-    --badge-bg: 145 40% 92%;
-    --badge-text: 145 50% 35%;
+    /* Light blue for practice background */
+    --practice-bg: 200 50% 95%;
+
+    --secondary: 200 30% 96%;
+    --secondary-foreground: 220 15% 25%;
+
+    --muted: 200 20% 92%;
+    --muted-foreground: 220 10% 50%;
+
+    --accent: 145 55% 48%;
+    --accent-foreground: 0 0% 100%;
+
+    --success: 145 55% 48%;
+    --success-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 200 30% 88%;
+    --input: 200 30% 88%;
+    --ring: 205 85% 55%;
+
+    --radius: 1rem;
   }
 
   .dark {
-    --background: 45 33% 95%;
-    --foreground: 0 0% 25%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 25%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 25%;
-    --primary: 4 72% 58%;
+    --background: 220 20% 12%;
+    --foreground: 45 70% 95%;
+    --card: 220 20% 16%;
+    --card-foreground: 45 70% 95%;
+    --popover: 220 20% 16%;
+    --popover-foreground: 45 70% 95%;
+    --primary: 5 75% 60%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 45 33% 90%;
-    --secondary-foreground: 0 0% 25%;
-    --muted: 45 20% 88%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 45 33% 92%;
-    --accent-foreground: 0 0% 25%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 45 20% 85%;
-    --input: 45 20% 85%;
-    --ring: 4 72% 58%;
+    --muted: 220 15% 20%;
+    --muted-foreground: 220 10% 60%;
+    --border: 220 15% 25%;
+    --input: 220 15% 25%;
+    --ring: 205 85% 55%;
   }
 }
 
@@ -83,12 +84,86 @@
   }
 
   body {
-    @apply bg-background text-foreground font-nunito;
+    @apply bg-background text-foreground font-nunito antialiased;
+    min-height: 100vh;
   }
 }
 
 @layer utilities {
   .font-nunito {
     font-family: 'Nunito', sans-serif;
+  }
+
+  .bg-addition {
+    background-color: hsl(var(--addition));
+  }
+
+  .bg-subtraction {
+    background-color: hsl(var(--subtraction));
+  }
+
+  .bg-multiplication {
+    background-color: hsl(var(--multiplication));
+  }
+
+  .bg-division {
+    background-color: hsl(var(--division));
+  }
+
+  .bg-practice {
+    background-color: hsl(var(--practice-bg));
+  }
+
+  .text-addition {
+    color: hsl(var(--addition));
+  }
+
+  .text-subtraction {
+    color: hsl(var(--subtraction));
+  }
+
+  .text-multiplication {
+    color: hsl(var(--multiplication));
+  }
+
+  .text-division {
+    color: hsl(var(--division));
+  }
+
+  .border-addition {
+    border-color: hsl(var(--addition));
+  }
+
+  .border-subtraction {
+    border-color: hsl(var(--subtraction));
+  }
+
+  .border-multiplication {
+    border-color: hsl(var(--multiplication));
+  }
+
+  .border-division {
+    border-color: hsl(var(--division));
+  }
+
+  /* Animation for answer feedback */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  @keyframes pop-in {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .animate-shake {
+    animation: shake 0.3s ease-in-out;
+  }
+
+  .animate-pop-in {
+    animation: pop-in 0.3s ease-out;
   }
 }

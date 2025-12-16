@@ -1,68 +1,136 @@
 import { useState } from "react";
-import { Sparkles } from "lucide-react";
-import { OperationButton } from "@/components/OperationButton";
-import { PracticePage } from "@/components/PracticePage";
 import { Switch } from "@/components/ui/switch";
-
-type Operation = "addition" | "subtraction" | "multiplication" | "division" | null;
+import { Sparkles } from "lucide-react";
+import OperationCard from "@/components/OperationCard";
+import PracticeScreen from "@/components/PracticeScreen";
+import DifficultySelect from "@/components/DifficultySelect";
+import { Operation, generateQuestions, Question } from "@/lib/mathUtils";
 
 const Index = () => {
-  const [selectedOperation, setSelectedOperation] = useState<Operation>(null);
+  const [selectedOperation, setSelectedOperation] = useState<Operation | null>(null);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<number | null>(null);
   const [decimalsEnabled, setDecimalsEnabled] = useState(false);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [cumulativeScore, setCumulativeScore] = useState({ correct: 0, incorrect: 0 });
 
+  const handleOperationSelect = (operation: Operation) => {
+    setSelectedOperation(operation);
+  };
+
+  const handleDifficultySelect = (maxNumber: number) => {
+    if (selectedOperation) {
+      const newQuestions = generateQuestions(selectedOperation, 10, !decimalsEnabled, maxNumber);
+      setQuestions(newQuestions);
+      setSelectedDifficulty(maxNumber);
+    }
+  };
+
+  const handleBackFromDifficulty = () => {
+    setSelectedOperation(null);
+  };
+
+  const handleBack = () => {
+    setSelectedDifficulty(null);
+    setQuestions([]);
+  };
+
+  const handleReset = () => {
+    if (selectedOperation && selectedDifficulty) {
+      const newQuestions = generateQuestions(selectedOperation, 10, !decimalsEnabled, selectedDifficulty);
+      setQuestions(newQuestions);
+      setCumulativeScore({ correct: 0, incorrect: 0 });
+    }
+  };
+
+  const handleAnswer = (questionId: number, answer: string) => {
+    setQuestions((prev) =>
+      prev.map((q) => {
+        if (q.id === questionId && !q.isAnswered) {
+          const userNum = parseFloat(answer);
+          const isCorrect = !isNaN(userNum) && Math.abs(userNum - q.correctAnswer) < 0.01;
+          setCumulativeScore(score => ({
+            correct: score.correct + (isCorrect ? 1 : 0),
+            incorrect: score.incorrect + (isCorrect ? 0 : 1),
+          }));
+          return {
+            ...q,
+            userAnswer: answer,
+            isAnswered: true,
+            isCorrect,
+          };
+        }
+        return q;
+      })
+    );
+  };
+
+  // Show practice screen if both operation and difficulty are selected
+  if (selectedOperation && selectedDifficulty) {
+    return (
+      <PracticeScreen
+        operation={selectedOperation}
+        questions={questions}
+        wholeNumbersOnly={!decimalsEnabled}
+        cumulativeScore={cumulativeScore}
+        onBack={handleBack}
+        onReset={handleReset}
+        onAnswer={handleAnswer}
+      />
+    );
+  }
+
+  // Show difficulty selection if operation is selected
   if (selectedOperation) {
     return (
-      <PracticePage
+      <DifficultySelect
         operation={selectedOperation}
-        decimalsEnabled={decimalsEnabled}
-        onBack={() => setSelectedOperation(null)}
+        onSelect={handleDifficultySelect}
+        onBack={handleBackFromDifficulty}
       />
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center py-8 px-4">
-      {/* Badge */}
-      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-badge text-badge-foreground text-sm font-semibold mb-6">
-        <Sparkles className="w-4 h-4" />
-        <span>Math Practice</span>
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <div className="px-4 pt-8 pb-6">
+        <div className="container max-w-md mx-auto text-center">
+          <div className="inline-flex items-center gap-2 bg-addition/10 text-addition px-4 py-2 rounded-full mb-4">
+            <Sparkles className="w-4 h-4" />
+            <span className="text-sm font-bold">Math Practice</span>
+          </div>
+
+          <h1 className="text-4xl md:text-5xl font-extrabold text-primary font-nunito mb-3">
+            Math Learning App
+          </h1>
+          <p className="text-lg text-muted-foreground font-nunito mb-6">
+            Choose an operation to practice
+          </p>
+        </div>
       </div>
 
-      {/* Title */}
-      <h1 className="text-4xl md:text-5xl font-extrabold text-primary text-center italic mb-3">
-        Math Learning App
-      </h1>
-      <p className="text-muted-foreground text-lg mb-8">
-        Choose an operation to practice
-      </p>
+      {/* Main Content */}
+      <div className="px-4 pb-8">
+        <div className="container max-w-md mx-auto">
+          {/* Decimals Toggle */}
+          <div className="bg-secondary/80 rounded-2xl px-5 py-4 mb-6 flex items-center justify-between">
+            <span className="text-lg font-semibold text-foreground">
+              {decimalsEnabled ? "Decimals enabled (0.1)" : "Decimals enable (0.1)"}
+            </span>
+            <Switch
+              checked={decimalsEnabled}
+              onCheckedChange={setDecimalsEnabled}
+            />
+          </div>
 
-      {/* Decimals Toggle */}
-      <div className="w-full max-w-sm bg-card rounded-xl shadow-sm p-4 flex items-center justify-between mb-6">
-        <span className="text-foreground font-medium">Decimals enable (0.1)</span>
-        <Switch
-          checked={decimalsEnabled}
-          onCheckedChange={setDecimalsEnabled}
-        />
-      </div>
-
-      {/* Operation Buttons */}
-      <div className="w-full max-w-sm space-y-4">
-        <OperationButton
-          operation="addition"
-          onClick={() => setSelectedOperation("addition")}
-        />
-        <OperationButton
-          operation="subtraction"
-          onClick={() => setSelectedOperation("subtraction")}
-        />
-        <OperationButton
-          operation="multiplication"
-          onClick={() => setSelectedOperation("multiplication")}
-        />
-        <OperationButton
-          operation="division"
-          onClick={() => setSelectedOperation("division")}
-        />
+          {/* Operation Cards */}
+          <div className="space-y-4">
+            <OperationCard operation="addition" onClick={() => handleOperationSelect("addition")} />
+            <OperationCard operation="subtraction" onClick={() => handleOperationSelect("subtraction")} />
+            <OperationCard operation="multiplication" onClick={() => handleOperationSelect("multiplication")} />
+            <OperationCard operation="division" onClick={() => handleOperationSelect("division")} />
+          </div>
+        </div>
       </div>
     </div>
   );
